@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>〇から〇へ繋ゲーム</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+
+  </head>
+
+  <body>
+  <h1>webプログラムⅡ　ポートフォリオ</h1>  
+  <div>
+    <div>あなたのID: <span id="myid"></span></div>
+    <div>ルームID: <span id="room"></span></div>
+    <div>こんな課題を作りました。
+    </div>
+  </div>
+  <script>
+    let room = "s1317218";
+    let socket = io.connect('https://qa.fujimura.com');
+    
+    let myid;
+    let speedX = 0;
+    let speedY = 0;
+    
+    document.querySelector("#room").innerHTML = room;
+    socket.on('mylogin', function(data) {
+      myid = data;
+      socket.emit('join', room); // 受信room IDを指定
+      document.querySelector("#myid").innerHTML = myid;
+      console.log("あなたのID: ", myid);
+    });
+            
+    socket.on('sensor', function(data) {
+      console.log(data.g);
+      speedX = 0.05*parseInt(data.g);
+      speedY = 0.05*parseInt(data.b);
+    });
+      
+    let x = 0;
+    let y = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let targetX1 = 0;
+    let targetY1 = 0;
+    let targetX2 = 0;
+    let targetY2 = 0;
+    let targetX6 = 0;
+    let targetY6 = 0;
+
+    function setup(){
+      createCanvas(640,480);
+      background(200);
+      x = width/2;
+      y = height/2;
+      targetX = random(width-100);
+      targetY = random(height-100);
+      targetX1 = random(width-100);
+      targetY1 = random(height-100);
+      targetX2 = random(width-100);
+      targetY2 = random(height-100);
+      targetX6 = random(width-100);
+      targetY6 = random(height-100);
+    }
+    
+    function draw(){
+      background(200);
+      
+      x = x + speedX;
+      y = y + speedY;
+      
+      if (x>width-70) x= width-70;
+      if (x<0) x=0;
+      if (y>height-70) y= height-70;
+      if (y<0) y=0;
+      
+      let distance = Math.sqrt(Math.pow(targetX-x,2) + Math.pow(targetY-y,2));
+      if(distance < 70){
+        document.write('<img src="ng.png"  />');
+      if (x>width-70) x= width-70;
+      if (x<0) x=0;
+      if (y>height-70) y= height-70;
+      if (y<0) y=0;
+      }
+      let distance1 = Math.sqrt(Math.pow(targetX1-x,2) + Math.pow(targetY1-y,2));
+      if(distance1 < 70){
+        location.href="flex-sp02.html";
+      if (x>width-70) x= width-70;
+      if (x<0) x=0;
+      if (y>height-70) y= height-70;
+      if (y<0) y=0;
+      }
+      let distance2 = Math.sqrt(Math.pow(targetX2-x,2) + Math.pow(targetY2-y,2));
+      if(distance2 < 70){
+        location.href="network.html";
+      if (x>width-70) x= width-70;
+      if (x<0) x=0;
+      if (y>height-70) y= height-70;
+      if (y<0) y=0;
+      }
+
+      let distance6 = Math.sqrt(Math.pow(targetX6-x,2) + Math.pow(targetY6-y,2));
+      if(distance6 < 70){
+        location.href="speech07.html";
+      if (x>width-70) x= width-70;
+      if (x<0) x=0;
+      if (y>height-70) y= height-70;
+      if (y<0) y=0;
+      }
+
+      rect(x, y, 70, 70, 255);
+      fill(0,0,0);
+      
+      rect(targetX, targetY, 70, 70);
+      fill(0,255,255);
+      rect(targetX1, targetY1, 70, 70);
+      fill(255,0,255);
+      rect(targetX2, targetY2, 70, 70);
+      fill(255,255,255);
+      
+      rect(targetX6, targetY6, 70, 70);
+      fill(255,0,0);
+    }
+  </script>
+    
+</body>
+</html>

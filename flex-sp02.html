@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>円：circles</title>
+
+<!-- 1. ここにP5.jsを読み込む -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+
+<!-- 2.以下にsetup関数とdraw関数を定義 -->
+<script>
+
+let room = "s1317218";
+let socket = io.connect('https://qa.fujimura.com');    
+let myid;
+
+let rotZ = 0;
+let gamma = 0;
+let beta = 0;
+  
+let w=2;
+let h=30;
+let d=30;
+    
+socket.on('mylogin', function(data) {
+  document.querySelector("#room").innerHTML = room;
+  myid = data;
+  socket.emit('join', room); // 受信room IDを指定
+  document.querySelector("#myid").innerHTML = myid;
+  console.log("あなたのID: ", myid);
+});
+            
+socket.on('sensor', function(data) {
+  gamma = parseInt(data.g);
+  beta = parseInt(data.b);
+  speedX = gamma;
+  speedY = beta;
+  //console.log(data);
+});  
+  
+function setup() {
+  createCanvas(800, 800, WEBGL);
+  ambientLight(125, 125, 125);
+  directionalLight(255, 255, 255, 1, 1, 1);
+  pointLight(255, 255, 255, 0, 0, 800);
+  noStroke();
+}
+
+theta = 0;
+function draw() {
+  background(10);
+  orbitControl();
+  
+  // 板の動き
+  push();
+  rotateX(-PI*beta/180);
+  rotateZ(PI*gamma/180);
+  translate(0,0,-50);
+  specularMaterial(200,200,200);
+  box(800,30,800);
+
+  rotZ += 0.01 * PI*gamma/180;
+  if (rotZ > 0.1) rotZ = 0.1;
+  if (rotZ < -0.1) rotZ = -0.1;
+  
+  for (let j=0; j<10; j++) {
+    for (let i=0; i<10; i++) {
+      push();
+      translate(-200+40*i,0,-200+40*j);
+      arm();
+      pop();
+    }
+  }
+  
+  theta+=1;
+  pop();
+}
+  
+function arm() {
+  for (i=0;i<10;i++) {
+    //let rot = 0.1 * Math.sin(theta*PI/180);
+    rotateZ(rotZ);
+    specularMaterial(100,250,100);
+    box(w,h,d); 
+    let x = h/2*sin(rotZ);
+    //let x = 0;
+    let y = -h/2*cos(rotZ);
+    //let y = -h/2;
+    translate(x,2*y,0);
+  }
+}
+</script>
+</head>
+<body>
+  <div>ID: <span id="myid"></span></div>
+  <div>room: <span id="room"></span></div>
+</body>
+</html>
